@@ -39,11 +39,29 @@ Type Garage=Enregistrement
 	Adresse:AdressType
 FinEnregistrement
 Type Tab12= Tableau [1..2] de Garage
-Fonction ValidationDate()
+Fonction ValidationDate(var T2:Tabl)
 DEBUT
+	Si T2[1].Caisse[i].DateMiseCirc.Mois>12 Alors
+		ValidationDate<-FAUX 
+	Finsi
 	CAS T2[1].Caisse[i].DateMiseCirc.Mois Parmis 
-		1 : DEBUT 
-				Si 
+		1,3,5,7,8,10,12 : Si T2[1].Caisse[i].DateMiseCirc.Jour>31 Alors
+				ValidationDate<-FAUX 
+			Finsi 
+		2 : Si (T2[1].Caisse[i].DateMiseCirc.Mois DIV 4)=0 ET (T2[1].Caisse[i].DateMiseCirc.Mois DIV 100)<>0 Alors 
+				Si T2[1].Caisse[i].DateMiseCirc.Jour>29 Alors 
+					ValidationDate<-FAUX 
+				Finsi 
+			Sinon Si T2[1].Caisse[i].DateMiseCirc.Jour>28 Alors 
+				ValidationDate<-FAUX
+			Finsi 
+		4,6,9,11 : Si T2[1].Caisse[i].DateMiseCirc.Jour>30 Alors
+				ValidationDate<-FAUX 
+			Finsi 
+		FinCasParmis
+	Si T2[1].Caisse[i].DateMiseCirc.Annee>2017 Alors 
+		ValidationDate<-Faux
+	Finsi 
 FIN 
 Procedure GarageAdresse (var T2:Tab12)
 Var
@@ -134,7 +152,7 @@ DEBUT
     Ecrire("De quels options disposent-elle ?");
     Lire(T2[1].Caisse[VoitureG1].Option);
 	REPETER
-		Ecrire ("Indiquez l annee du mode (1990 minimum)")
+		Ecrire ("Indiquez l annee du modele (1990 minimum)")
 		Lire (T2[1].Caisse[VoitureG1].annee)
 	JUSQUA (T2[1].Caisse[VoitureG1].annee>=1990) ET (T2[1].Caisse[VoitureG1].annee<=2017)
 	FinRepeter
@@ -142,9 +160,9 @@ DEBUT
 	Lire (T2[1].Caisse[VoitureG1].Prixneuf)
 	CoteArgusEtAgeV1(T2,T1,VoitureG1)
 	REPETER
-		Ecrire ("Entrez l annee de circulation du modele  1990 mini")
+		Ecrire ("Entrez la date de mise en circulation JJ MM AAAA")
 		Lire (T2[1].Caisse[VoitureG1].DateMiseCirc)
-	JUSQUA (T2[1].Caisse[VoitureG1].DateMiseCirc>=1990) ET (T2[1].Caisse[VoitureG1].DateMiseCirc<=2017)
+	JUSQUA ValidationDate<-VRAI
 	MaChaine=' '
 	POUR j de 1 A 9 faire
 		Si (j<3) OU (j>7) alors
@@ -197,7 +215,7 @@ DEBUT
 	REPETER
 		Ecrire ("Entrez l annee de circulation du modele  1990 mini")
 		Lire (T2[2].Caisse[VoitureG2].DateMiseCirc)
-	JUSQUA (T2[2].Caisse[VoitureG2].DateMiseCirc>=1990) ET (T2[2].Caisse[VoitureG2].DateMiseCirc<=2017)
+	JUSQUA ValidationDate<-VRAI
 	MaChaine=' '
 	POUR j de 1 A 9 faire
 		Si (j<3) OU (j>7) alors
@@ -595,7 +613,7 @@ Begin
 	Readln(T2[1].Caisse[VoitureG1].Prixneuf);
 	CoteArgusEtAgeV1(T2,T1,VoitureG1);
 	Repeat
-		Writeln('Entree la date de mise en de circulation du modele - ');
+		Writeln('Entree la date de mise en de circulation du modele - JJ MM AAAA ');
 		Readln(T2[1].Caisse[VoitureG1].DateMiseCirc.Jour,T2[1].Caisse[VoitureG1].DateMiseCirc.Mois,T2[1].Caisse[VoitureG1].DateMiseCirc.Annee);
 	Until IsValidDate(T2[1].Caisse[VoitureG1].DateMiseCirc.Annee,T2[1].Caisse[VoitureG1].DateMiseCirc.Mois,T2[1].Caisse[VoitureG1].DateMiseCirc.Jour);
 	MaChaine:=' ';
@@ -650,7 +668,7 @@ Begin
 	Readln(T2[2].Caisse[VoitureG2].Prixneuf);
 	CoteArgusEtAgeV2(T2,T1,VoitureG2);	
    Repeat
-		Writeln('Entree la date de mise en de circulation du modele - ');
+		Writeln('Entree la date de mise en de circulation du modele - JJ MM AAAA ');
 		Readln(T2[2].Caisse[VoitureG2].DateMiseCirc.Jour,T2[2].Caisse[VoitureG2].DateMiseCirc.Mois,T2[2].Caisse[VoitureG2].DateMiseCirc.Annee);
 	Until IsValidDate(T2[2].Caisse[VoitureG2].DateMiseCirc.Annee,T2[2].Caisse[VoitureG2].DateMiseCirc.Mois,T2[2].Caisse[VoitureG2].DateMiseCirc.Jour);
 	MaChaine:=' ';
